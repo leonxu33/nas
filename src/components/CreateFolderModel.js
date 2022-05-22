@@ -4,15 +4,16 @@ import axios from "axios";
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { notifyAlert } from '../redux/alert/alertSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import alertType from '../redux/alert/alertType';
 import { dir_api } from '../handlers/api';
 
 export default function CreateFolderModel(props) {
     const [folder, setFolder] = useState("");
-    const [cookie, setCookie] = useCookies();
+    const [cookie] = useCookies();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const curDir = useSelector(state => state.fileList.curDir)
 
     const handleClose = () => {
         props.setShow(false);
@@ -25,7 +26,7 @@ export default function CreateFolderModel(props) {
 
     const onSubmit = () => {
         if (folder !== "") {
-            let queryDir = props.curDir.join("/") + "/" + folder
+            let queryDir = curDir.join("/") + "/" + folder
             let queryUrl = dir_api+"?key="+queryDir
             axios.post(
                 queryUrl,
@@ -66,7 +67,7 @@ export default function CreateFolderModel(props) {
                 <Modal.Body>
                     <Form onSubmit={onSubmit}>
                         <Form.Group className="mb-3" controlId="newFolderName">
-                            <Form.Label>New folder at {"/root/" + props.curDir.join("/")}</Form.Label>
+                            <Form.Label>New folder at {"/root/" + curDir.join("/")}</Form.Label>
                             <Form.Control type="text" placeholder="folder name" onChange={handleFolderInputChange} />
                         </Form.Group>
                     </Form>

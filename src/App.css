@@ -1,10 +1,8 @@
-/* .app {
-    background-color: darkslategrey;
-} */
 
-.party-list-scroll {
-  height: calc(100vh - 120px);
-  overflow: scroll;
+.app {
+  /* background: #74ebd5; */
+  /* background: -webkit-linear-gradient(to right, #74ebd5, #ACB6E5);
+  background: linear-gradient(to right, #74ebd5, #ACB6E5); */
 }
 
 .body {
@@ -104,6 +102,16 @@
   background-color: #dae4da;
 }
 
+.table-filelist-header {
+  cursor: pointer;
+
+}
+
+.table-filelist-header:hover {
+  border-radius: 8px;
+  background-color: #dae4da;
+}
+
 .brand-link {
   color: white;
   text-decoration: none;
@@ -111,6 +119,42 @@
 
 .brand-link:focus {
   color: white;
+}
+
+.brand-link:hover {
+  color: white;
+}
+
+.filelist-popup {
+  max-height: 400px;
+  overflow-y:auto;
+}
+
+/* .mainfilelist-table-header {
+  border-radius: 8px;
+  border-style: solid;
+  border-collapse: separate; 
+} */
+
+.mainfilelist-table tbody {
+  height: 67vh;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.mainfilelist-table thead,
+.mainfilelist-table tbody,
+.mainfilelist-table tr,
+.mainfilelist-table td,
+.mainfilelist-table th {
+  display: block;
+}
+
+.mainfilelist-table tbody td,
+.mainfilelist-table tbody th,
+.mainfilelist-table thead > tr > th {
+  float: left;
+  position: relative;
 }
 
 

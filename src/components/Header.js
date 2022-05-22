@@ -22,7 +22,7 @@ export default function Header(props){
         } else {
             setShowExit(true)
         }
-    }, [window.location.pathname])
+    }, [window.location.hash])
 
     return (
         <div>

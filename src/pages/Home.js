@@ -6,7 +6,7 @@ class Home extends Component {
         return (
             <div className="body">
                 <div className="welcome-title">
-                    <h1>Welcome to Leon's NAS</h1>
+                    <h1>Welcome to Leon's Private Cloud</h1>
                 </div>
                 <TokenInputForm />
             </div>

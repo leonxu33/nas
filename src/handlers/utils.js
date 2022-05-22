@@ -7,3 +7,7 @@ export const bytesToSize = (bytes) => {
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 }
+
+export const splitRemoveEmpty = (data, sep) => {
+    return data.split(sep).filter(element => element)
+}

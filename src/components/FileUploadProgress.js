@@ -55,7 +55,6 @@ const FileUploaderItem = (props) => {
     const onCancellation = () => {
         const cs = props.uploadInfo.cancelSource
         cs.cancel()
-        console.log("canceled", props.uploadInfo.id)
     }
 
     if (props.uploadInfo === null || props.uploadInfo.id === null) {

@@ -9,12 +9,12 @@ import { dir_api } from '../handlers/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { notifyAlert } from '../redux/alert/alertSlice';
 import alertType from '../redux/alert/alertType';
+import { removeAllSelectedFiles, setCurDir, updateFileList } from '../redux/fileList/fileListSlice';
+import { splitRemoveEmpty } from '../handlers/utils';
 
 export default function FileBrowser() {
-    const [fileList, setFileList] = useState(null)
-    const [curDir, setCurDir] = useState([])
-    const [search, setSearch] = useSearchParams()
-    const [cookie, setCookie] = useCookies()
+    const [search] = useSearchParams()
+    const [cookie] = useCookies()
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -35,8 +35,8 @@ export default function FileBrowser() {
                 }
             },)
             .then(res => {
-                setFileList(res.data.metadatas)
-                setCurDir(res.data.queryFolder.split("/").filter(element => element))
+                dispatch(updateFileList(res.data.metadatas))
+                dispatch(setCurDir(splitRemoveEmpty(res.data.queryFolder, "/")))
             }).catch(err => {
                 console.log(err);
                 try {
@@ -53,13 +53,13 @@ export default function FileBrowser() {
                     }
                 } catch (err) {console.log(err)}
             })
+        dispatch(removeAllSelectedFiles())
     }
 
     return (
         <div className="body">
-            <h3 className="spacer">File Browser</h3>
-            <FileToolBar handleRefresh={onRefreshFileList} curDir={curDir} />
-            <FileList handleRefresh={onRefreshFileList} fileList={fileList} curDir={curDir} />
+            <FileToolBar handleRefresh={onRefreshFileList} />
+            <FileList handleRefresh={onRefreshFileList} />
             <FileUploaderProgress />
         </div>
     );

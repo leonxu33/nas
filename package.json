@@ -1,5 +1,5 @@
 {
-  "homepage": "https://lyokalita.github.io/nas",
+  "homepage": "https://lyokalita.github.io",
   "name": "naspublic.webfrontend",
   "version": "0.1.0",
   "private": true,
@@ -28,7 +28,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "predeploy": "npm run build",
+    "predeploy": "npm run build && cp CNAME build/CNAME",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
