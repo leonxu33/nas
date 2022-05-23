@@ -24,14 +24,12 @@ export default function FileUploadModel(props) {
     }
 
     const onSelectedFile = (e) => {
-        console.log(e.target.files)
         setSelectedFiles(e.target.files)
     }
 
     const upload = (file) => {
         const uploadId = uuidv4()
         if (uploadId in progress) {
-            console.log("existed: ", uploadId)
             return
         }
 

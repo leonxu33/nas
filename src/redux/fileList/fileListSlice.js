@@ -15,7 +15,7 @@ export const fileListSlice = createSlice({
             let key = action.payload.sortKey
             let isAscendMultiplier = action.payload.isAscend ? 1 : -1
             state.fileList.sort((a, b) => {
-                if (a[key] == b[key]) return 0 * isAscendMultiplier;
+                if (a[key] === b[key]) return 0 * isAscendMultiplier;
                 if (a[key] < b[key]) return -1 * isAscendMultiplier;
                 if (a[key] > b[key]) return 1 * isAscendMultiplier;
             })

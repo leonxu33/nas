@@ -30,6 +30,7 @@ export default function FileDeleteModel(props) {
                     }
                 },
             ).then(res => {
+                props.handleRefresh()
             }).catch(err => {
                 console.log(err);
                 try {

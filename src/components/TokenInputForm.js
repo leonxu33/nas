@@ -4,7 +4,7 @@ import { FormControl } from "react-bootstrap";
 import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { dir_api } from '../handlers/api';
+import { auth_api } from '../handlers/api';
 import { notifyAlert } from '../redux/alert/alertSlice';
 import alertType from '../redux/alert/alertType';
 
@@ -34,13 +34,13 @@ export default function TokenInputForm(props) {
             }))
             return
         }
-        await axios.get(dir_api, {
+        await axios.get(auth_api, {
                 headers: {
                     "Authorization": `Bearer ${curToken}`,
                 },
             })
             .then(res => {
-                console.log("Authorized")
+                console.log("Authorized", res)
                 setCookie('token', curToken, {expires: new Date(new Date().getTime()+(24*60*60*1000))})
                 navigate('/dir')
             }).catch(err => {

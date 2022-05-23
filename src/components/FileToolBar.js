@@ -22,8 +22,7 @@ export default function FileToolBar(props) {
     const [showCreateFolder, setShowCreateFolder] = useState(false)
     const [showUpload, setShowUpload] = useState(false)
     const [showDelete, setShowDelete] = useState(false);
-    const [disableDownload, setDisableDownload] = useState(false)
-
+    const [isDownloading, setIsDownloading] = useState(false)
 
     let navList = []
     let temp = ""
@@ -51,48 +50,49 @@ export default function FileToolBar(props) {
         setSearch({ prefix: newDir })
     }
 
-    const getQueryParams = (filename) => {
-        return "?key=" + curDir.join("/") + "/" + filename
-    }
-
-    const onDownload = (e) => {
-        if (selectedFiles.length > 1) {
+    const onDownload = () => {
+        if (selectedFiles.length === 0) {
             return
         }
-        selectedFiles.forEach((filename) => {
-            axios.post(download_api + getQueryParams(filename),
-                null,
-                {
-                    headers: {
-                        "Authorization": `Bearer ${cookie.token}`,
-                    }
-                })
-                .then(res => {
-                    const downloadUrl = `${download_api}?signed=${res.data.signed}&nc=${res.data.nonce}`
-
-                    window.open(downloadUrl)
-                    // const downloadLink = document.createElement('a', {is: filename})
-                    // downloadLink.href = `${download_api}?signed=${signed}&nc=${nonce}`
-                    // document.body.appendChild(downloadLink)
-                    // downloadLink.click()
-                    // downloadLink.parentNode.removeChild(downloadLink)
-                }).catch(err => {
-                    console.log(err);
-                    try {
-                        let errMsg = err.message
-                        if (err.response.data !== undefined && err.response.data !== "") {
-                            errMsg = err.response.data
-                        }
-                        dispatch(notifyAlert({
-                            type: alertType.ERROR,
-                            message: errMsg
-                        }))
-                        if (err.response.status === 401) {
-                            navigate('/')
-                        }
-                    } catch (err) { console.log(err) }
-                })
+        setIsDownloading(true)
+        let completeFilePath = selectedFiles.map((filename) => {
+            return curDir.join("/") + "/" + filename
         })
+        const postBody = JSON.stringify({
+            files: completeFilePath
+        })
+        axios.post(download_api,
+            postBody,
+            {
+                headers: {
+                    "Authorization": `Bearer ${cookie.token}`,
+                }
+            })
+            .then(res => {
+                const downloadUrl = `${download_api}?signed=${res.data.signed}&nc=${res.data.nonce}`
+                const downloadLink = document.createElement('a')
+                downloadLink.href = downloadUrl
+                document.body.appendChild(downloadLink)
+                downloadLink.click()
+                downloadLink.parentNode.removeChild(downloadLink)
+                setIsDownloading(false)
+            }).catch(err => {
+                console.log(err);
+                setIsDownloading(false)
+                try {
+                    let errMsg = err.message
+                    if (err.response.data !== undefined && err.response.data !== "") {
+                        errMsg = err.response.data
+                    }
+                    dispatch(notifyAlert({
+                        type: alertType.ERROR,
+                        message: errMsg
+                    }))
+                    if (err.response.status === 401) {
+                        navigate('/')
+                    }
+                } catch (err) { console.log(err) }
+            })
     }
 
     const onDelete = () => {
@@ -101,28 +101,20 @@ export default function FileToolBar(props) {
         }
     }
 
-    useEffect(() => {
-        if (selectedFiles.length > 1) {
-            setDisableDownload(true)
-        } else {
-            setDisableDownload(false)
-        }
-    }, [selectedFiles])
-
     return (
         <div>
             <Breadcrumb>
-                    <Breadcrumb.Item></Breadcrumb.Item>
-                    {navList.map(item => (
-                        <Breadcrumb.Item key={item.index} onClick={() => setSearch({ prefix: item.dir })} >
-                            {item.name}
-                        </Breadcrumb.Item>
-                    ))}
+                <Breadcrumb.Item></Breadcrumb.Item>
+                {navList.map(item => (
+                    <Breadcrumb.Item key={item.index} onClick={() => setSearch({ prefix: item.dir })} >
+                        {item.name}
+                    </Breadcrumb.Item>
+                ))}
             </Breadcrumb>
             <div className='spacer'>
                 <Button variant="secondary" onClick={onBack}>Back</Button>
                 <Button variant="info" onClick={props.handleRefresh}>Refresh</Button>
-                <Button variant="success" disabled={disableDownload} onClick={onDownload} >Download</Button>
+                <Button variant="success" disabled={isDownloading} onClick={onDownload} >{isDownloading ? 'Zipping...' : 'Download'}</Button>
                 <Button variant="light" onClick={() => setShowCreateFolder(true)}>Create Folder</Button>
                 <Button variant="warning" onClick={() => setShowUpload(true)}>Upload</Button>
                 <Button variant="danger" onClick={onDelete}>Delete</Button>
@@ -130,7 +122,7 @@ export default function FileToolBar(props) {
 
             <CreateFolderModel show={showCreateFolder} setShow={setShowCreateFolder} handleRefresh={props.handleRefresh} />
             <FileUploadModel show={showUpload} setShow={setShowUpload} upload={props.upload} handleRefresh={props.handleRefresh} />
-            <FileDeleteModel show={showDelete} setShow={setShowDelete} />
+            <FileDeleteModel show={showDelete} setShow={setShowDelete} handleRefresh={props.handleRefresh} />
         </div>
 
     );

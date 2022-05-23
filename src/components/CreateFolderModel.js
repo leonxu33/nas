@@ -37,6 +37,7 @@ export default function CreateFolderModel(props) {
                     }
                 },
             ).then(res => {
+                props.handleRefresh()
             }).catch(err => {
                 console.log(err);
                 try {
@@ -54,7 +55,6 @@ export default function CreateFolderModel(props) {
                 } catch (err) {console.log(err)}
             })
             handleClose()
-            props.handleRefresh()
         }
     }
 
